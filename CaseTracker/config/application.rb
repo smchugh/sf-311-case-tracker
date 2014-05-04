@@ -21,7 +21,8 @@ module CaseTracker
     # config.i18n.default_locale = :de
 
     # 311 Case Data
-    config.case_data = 'http://data.sfgov.org/resource/vw6y-z8j6.json'
+    config.case_data_url = 'http://data.sfgov.org/resource/vw6y-z8j6.json'
+    config.max_case_results = 1000
   end
 end
 
