@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140504150328) do
+ActiveRecord::Schema.define(version: 20140504172725) do
 
   create_table "cases", force: true do |t|
     t.integer  "point_id",              limit: 8
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20140504150328) do
     t.string   "address"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "closed"
   end
 
   add_index "cases", ["category_id"], name: "index_cases_on_category_id", using: :btree
