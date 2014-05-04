@@ -32,11 +32,79 @@ class Case < ActiveRecord::Base
   belongs_to :status
   belongs_to :neighborhood
   belongs_to :responsible_agency
-  belongs_to :source
+  belongs_to :request_source, class_name: 'Source', foreign_key: 'source_id'
 
   validates :sf_case_id, presence: true, uniqueness: true
   validates :opened, presence: true
   validates_length_of :request_details, :media_url, maximum: 255
+
+  def to_json_body
+    body = {case_id: sf_case_id, opened: opened}
+    body[:point] = point.to_json_body if point
+    body[:category] = category.name if category
+    body[:request_details] = request_details if request_details
+    body[:source] = request_source.name if request_source
+    body[:address] = address if address
+    body[:request_type] = request_type.name if request_type
+    body[:status] = status.name if status
+    body[:updated] = updated if updated
+    body[:neighborhood] = neighborhood.name if neighborhood
+    body[:closed] = closed if closed
+    body[:supervisor_district] = neighborhood.supervisor_district if neighborhood
+    body[:responsible_agency] = responsible_agency.name if responsible_agency
+  end
+
+  # Return the cases that meet the specified filter criteria
+  #  N.B. This approach will choose to simply not filter the results when an
+  #  invalid filter value is passed in. Another approach could be to force the
+  #
+  # @param filters [Hash] Filters to apply to the Point scope
+  #                       Currently consists of:
+  #                         - near: {latitude: latitude, longitude: longitude}
+  #                         - since: datetime opened
+  #                         - status: status name
+  #                         - source: source name
+  # @return [Collection] All cases that meet the filter criteria
+  scope :filtered_cases, ->(filters) {
+    # Get the points within five miles of the given point, or nil if none was provided
+    if filters[:near] && filters[:near][:latitude] && filters[:near][:longitude]
+      points = Point.within_five_miles(
+          filters[:near][:latitude],
+          filters[:near][:longitude]
+      )
+    else
+      points = nil
+    end
+
+    # Get the status to filter by or nil if none was provided
+    if filters[:status]
+      # Get the status that matches the filter value, or a dummy Status that
+      # no case will match if the filter value is bogus
+      status = Status.find_by(name: filters[:status]) || Status.new(id: 0)
+    else
+      status = nil
+    end
+
+    # Get the source to filter by or nil if none was provided
+    if filters[:source]
+      # Get the source that matches the filter value, or a dummy Source that
+      # no case will match if the filter value is bogus
+      source = Source.find_by(name: filters[:source]) || Source.new(id: 0)
+    else
+      source = nil
+    end
+
+    cases = []
+    Point.transaction do
+      cases = all
+      cases = cases.where(point_id: points) if points
+      cases = cases.where('opened > ?', filters[:since]) if filters[:since]
+      cases = cases.where(status: status) if status
+      cases = cases.where(source: source) if source
+    end
+
+    cases
+  }
 
   # Load the data from the sfgov site into the local db
   #

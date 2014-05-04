@@ -13,6 +13,39 @@
 class Point < ActiveRecord::Base
   validates :longitude, presence: true, uniqueness: {scope: :latitude}
 
+  MILES_PER_LATITUDE = 69.047
+  MILES_PER_LONGITUDE = 54.653 # Assuming a flat earth relative to the SF area
+
+  def to_json_body
+    {
+        latitude: latitude,
+        longitude: longitude,
+        needs_recoding: needs_recoding
+    }
+  end
+
+  # Return the points within a five mile radius of the given coordinate
+  #  For the purposes of query efficiency, and the time constraints of this
+  #  project, the logic herein assumes taxicab geometry for circle definition
+  #  https://en.wikipedia.org/wiki/Taxicab_geometry
+  #
+  # @param latitude  [float] Latitude of the circle center
+  # @param longitude [float] Longitude of the circle center
+  #
+  # @return [Collection] All points within five miles of the given point
+  scope :within_five_miles, ->(latitude, longitude) {
+    latitudes_per_five_miles = 5 / MILES_PER_LATITUDE
+    longitudes_per_five_miles = 5 / MILES_PER_LONGITUDE
+
+    where(
+        '(latitude BETWEEN ? AND ?) AND (longitude BETWEEN ? AND ?)',
+        latitude - latitudes_per_five_miles,
+        latitude + latitudes_per_five_miles,
+        longitude - longitudes_per_five_miles,
+        longitude + longitudes_per_five_miles
+    )
+  }
+
   # Attempt to create a new point or return an existing point
   #
   # @param point_attributes [Hash] Attributes to create the point with
