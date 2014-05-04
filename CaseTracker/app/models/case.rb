@@ -21,10 +21,6 @@
 #  closed                :datetime
 #
 
-require 'net/http'
-require 'json'
-require 'uri'
-
 class Case < ActiveRecord::Base
   belongs_to :point
   belongs_to :category
@@ -119,13 +115,7 @@ class Case < ActiveRecord::Base
 
     begin
       # Get the next thousand results
-      uri = URI(
-          Rails.configuration.case_data_url +
-          "?$limit=#{MAX_RESULTS}&$order=case_id%20ASC&" +
-          "$where=case_id%20%3E%20#{max_case_id}"
-      )
-      response = Net::HTTP.get_response(uri)
-      case_reports = JSON.parse(response.body, symbolize_names: true)
+      case_reports = ApplicationHelper::CaseData.request_case_data(max_case_id)
 
       # Set the count of the new result set
       result_count = case_reports.length
