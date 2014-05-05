@@ -50,6 +50,7 @@ class Case < ActiveRecord::Base
     body[:closed] = closed if closed
     body[:supervisor_district] = neighborhood.supervisor_district if neighborhood
     body[:responsible_agency] = responsible_agency.name if responsible_agency
+    body
   end
 
   # Return the cases that meet the specified filter criteria
@@ -62,6 +63,8 @@ class Case < ActiveRecord::Base
   #                         - since: datetime opened
   #                         - status: status name
   #                         - source: source name
+  #                         - limit: maximum number of results to return (default: 1000)
+  #                         - offset: offset for results (default: 0)
   # @return [Collection] All cases that meet the filter criteria
   scope :filtered_cases, ->(filters) {
     # Get the points within five miles of the given point, or nil if none was provided
@@ -98,7 +101,8 @@ class Case < ActiveRecord::Base
       cases = cases.where(point_id: points) if points
       cases = cases.where('opened > ?', filters[:since]) if filters[:since]
       cases = cases.where(status: status) if status
-      cases = cases.where(source: source) if source
+      cases = cases.where(request_source: source) if source
+      cases = cases.limit(filters[:limit]).offset(filters[:offset])
     end
 
     cases

@@ -16,7 +16,9 @@ class CasesController < ApplicationController
         since: datetime_since,
         status: params[:status],
         source: params[:source],
-        near: coordinates_near
+        near: coordinates_near,
+        limit: params[:limit] || 1000,
+        offset: params[:offset] || 0
     }
   end
 
