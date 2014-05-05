@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140504172725) do
+ActiveRecord::Schema.define(version: 20140505110136) do
 
   create_table "cases", force: true do |t|
     t.integer  "point_id",              limit: 8
@@ -59,8 +59,8 @@ ActiveRecord::Schema.define(version: 20140504172725) do
   add_index "neighborhoods", ["name"], name: "index_neighborhoods_on_name", unique: true, using: :btree
 
   create_table "points", force: true do |t|
-    t.float    "longitude"
-    t.float    "latitude"
+    t.decimal  "longitude",      precision: 18, scale: 14
+    t.decimal  "latitude",       precision: 18, scale: 14
     t.boolean  "needs_recoding"
     t.datetime "created_at"
     t.datetime "updated_at"
