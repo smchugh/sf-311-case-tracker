@@ -9,7 +9,7 @@
 #
 
 class ResponsibleAgency < ActiveRecord::Base
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   # Attempt to create a new responsible_agency or return an existing responsible_agency
   #

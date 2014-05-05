@@ -110,10 +110,8 @@ class Case < ActiveRecord::Base
 
   # Load the data from the sfgov site into the local db
   #
-  # TODO: Encapsulate the http request
-  #
   # @return nothing
-  def self.load_data
+  def self.load_data(for_test = false)
     max_case_id = select('MAX(sf_case_id) AS max_id').first[:max_id] || 0
     result_count = 0
 
@@ -121,8 +119,8 @@ class Case < ActiveRecord::Base
       # Get the next thousand results
       case_reports = ApplicationHelper::CaseData.request_case_data(max_case_id)
 
-      # Set the count of the new result set
-      result_count = case_reports.length
+      # Set the count of the new result set, or keep it at zero if this is a test
+      result_count = case_reports.length unless for_test
 
       # Insert each case into the DB
       case_reports.each do |case_report|

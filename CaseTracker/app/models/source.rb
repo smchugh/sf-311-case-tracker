@@ -9,7 +9,7 @@
 #
 
 class Source < ActiveRecord::Base
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   # Attempt to create a new source or return an existing source
   #

@@ -10,7 +10,7 @@
 #
 
 class Neighborhood < ActiveRecord::Base
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   # Attempt to create a new neighborhood or return an existing neighborhood
   #

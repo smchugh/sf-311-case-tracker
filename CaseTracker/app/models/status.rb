@@ -9,7 +9,7 @@
 #
 
 class Status < ActiveRecord::Base
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: {case_sensitive: false}
 
   # Attempt to create a new status or return an existing status
   #
