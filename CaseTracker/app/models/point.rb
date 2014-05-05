@@ -26,8 +26,9 @@ class Point < ActiveRecord::Base
 
   # Return the points within a five mile radius of the given coordinate
   #  For the purposes of query efficiency, and the time constraints of this
-  #  project, the logic herein assumes taxicab geometry for circle definition
-  #  https://en.wikipedia.org/wiki/Taxicab_geometry
+  #  project, the logic herein assumes a 10x10 mile square centered at the
+  #  point to be a close enough approximation. In future work, geometrical
+  #  calculations can be done in the SQL statement itself to find the points.
   #
   # @param latitude  [float] Latitude of the circle center
   # @param longitude [float] Longitude of the circle center
