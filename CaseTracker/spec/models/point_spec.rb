@@ -3,8 +3,8 @@
 # Table name: points
 #
 #  id             :integer          not null, primary key
-#  longitude      :float
-#  latitude       :float
+#  longitude      :decimal(18, 14)
+#  latitude       :decimal(18, 14)
 #  needs_recoding :boolean
 #  created_at     :datetime
 #  updated_at     :datetime
