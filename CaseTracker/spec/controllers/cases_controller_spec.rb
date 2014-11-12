@@ -12,7 +12,7 @@ describe CasesController do
 
     it 'index returns http success and three cases' do
       10.times do
-        FactoryGirl.create(:case)
+        create(:case)
       end
 
       get 'index', {format: :json}
@@ -23,12 +23,12 @@ describe CasesController do
     end
 
     it 'index returns http success and five cases with the same source' do
-      request_source = FactoryGirl.create(:source)
+      request_source = create(:source)
       10.times do |i|
         if i % 2 == 0
-          FactoryGirl.create(:case, request_source: request_source)
+          create(:case, request_source: request_source)
         else
-          FactoryGirl.create(:case)
+          create(:case)
         end
       end
 
@@ -40,12 +40,12 @@ describe CasesController do
     end
 
     it 'index returns http success and five cases with the same status' do
-      status = FactoryGirl.create(:status)
+      status = create(:status)
       10.times do |i|
         if i % 2 == 0
-          FactoryGirl.create(:case, status: status)
+          create(:case, status: status)
         else
-          FactoryGirl.create(:case)
+          create(:case)
         end
       end
 
@@ -59,9 +59,9 @@ describe CasesController do
     it 'index returns http success and five cases opened before yesterday' do
       10.times do |i|
         if i % 2 == 0
-          FactoryGirl.create(:case, opened: Date.today - 2.day)
+          create(:case, opened: Date.today - 2.day)
         else
-          FactoryGirl.create(:case, opened: Date.today)
+          create(:case, opened: Date.today)
         end
       end
 
@@ -73,13 +73,13 @@ describe CasesController do
     end
 
     it 'index returns http success and five cases within 5 miles' do
-      point_1 = FactoryGirl.create(:point, latitude: 37.7, longitude: -122.4)
-      point_2 = FactoryGirl.create(
+      point_1 = create(:point, latitude: 37.7, longitude: -122.4)
+      point_2 = create(
           :point,
           latitude: point_1.latitude - 2 / Point::MILES_PER_LATITUDE,
           longitude: -122.4 + 4 / Point::MILES_PER_LATITUDE
       )
-      point_3 = FactoryGirl.create(
+      point_3 = create(
           :point,
           latitude: point_1.latitude + 3 / Point::MILES_PER_LATITUDE,
           longitude: -122.4 - 1 / Point::MILES_PER_LATITUDE
@@ -87,12 +87,12 @@ describe CasesController do
       10.times do |i|
         if i % 2 == 0
           if i % 4 == 0
-            FactoryGirl.create(:case, point: point_2)
+            create(:case, point: point_2)
           else
-            FactoryGirl.create(:case, point: point_3)
+            create(:case, point: point_3)
           end
         else
-          FactoryGirl.create(:case)
+          create(:case)
         end
       end
 
@@ -104,20 +104,20 @@ describe CasesController do
     end
 
     it 'index returns http success and two cases with the same source and status' do
-      request_source = FactoryGirl.create(:source)
-      status = FactoryGirl.create(:status)
+      request_source = create(:source)
+      status = create(:status)
       10.times do |i|
         if i % 2 == 0
           if i > 4
-            FactoryGirl.create(:case)
+            create(:case)
           else
-            FactoryGirl.create(:case, request_source: request_source)
+            create(:case, request_source: request_source)
           end
         else
           if i > 4
-            FactoryGirl.create(:case, status: status)
+            create(:case, status: status)
           else
-            FactoryGirl.create(:case, request_source: request_source, status: status)
+            create(:case, request_source: request_source, status: status)
           end
         end
       end

@@ -14,7 +14,7 @@ require 'spec_helper'
 describe Neighborhood do
   context 'testing first_or_create with validations' do
     it 'should create a new neighborhood with a unique name' do
-      one_neighborhood = FactoryGirl.create(:neighborhood, name: 'One Name')
+      one_neighborhood = create(:neighborhood, name: 'One Name')
       another_neighborhood = Neighborhood.where({name: 'Another Name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)
@@ -24,7 +24,7 @@ describe Neighborhood do
     end
 
     it 'should get an existing neighborhood with a non-unique name' do
-      one_neighborhood = FactoryGirl.create(:neighborhood, name: 'Same Name')
+      one_neighborhood = create(:neighborhood, name: 'Same Name')
       another_neighborhood = Neighborhood.where({name: 'Same Name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)
@@ -34,7 +34,7 @@ describe Neighborhood do
     end
 
     it 'should get an existing neighborhood with a non-unique name regardless of case' do
-      one_neighborhood = FactoryGirl.create(:neighborhood, name: 'Same Name')
+      one_neighborhood = create(:neighborhood, name: 'Same Name')
       another_neighborhood = Neighborhood.where({name: 'same name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)

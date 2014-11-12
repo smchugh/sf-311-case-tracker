@@ -13,7 +13,7 @@ require 'spec_helper'
 describe ResponsibleAgency do
   context 'testing first_or_create with validations' do
     it 'should create a new responsible_agency with a unique name' do
-      one_responsible_agency = FactoryGirl.create(:responsible_agency, name: 'One Name')
+      one_responsible_agency = create(:responsible_agency, name: 'One Name')
       another_responsible_agency = ResponsibleAgency.where({name: 'Another Name'}).first_or_create
 
       expect(one_responsible_agency).not_to eq(nil)
@@ -23,7 +23,7 @@ describe ResponsibleAgency do
     end
 
     it 'should get an existing responsible_agency with a non-unique name' do
-      one_responsible_agency = FactoryGirl.create(:responsible_agency, name: 'Same Name')
+      one_responsible_agency = create(:responsible_agency, name: 'Same Name')
       another_responsible_agency = ResponsibleAgency.where({name: 'Same Name'}).first_or_create
 
       expect(one_responsible_agency).not_to eq(nil)
@@ -33,7 +33,7 @@ describe ResponsibleAgency do
     end
 
     it 'should get an existing responsible_agency with a non-unique name regardless of case' do
-      one_responsible_agency = FactoryGirl.create(:responsible_agency, name: 'Same Name')
+      one_responsible_agency = create(:responsible_agency, name: 'Same Name')
       another_responsible_agency = ResponsibleAgency.where({name: 'same name'}).first_or_create
 
       expect(one_responsible_agency).not_to eq(nil)

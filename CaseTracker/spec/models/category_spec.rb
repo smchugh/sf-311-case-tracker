@@ -13,7 +13,7 @@ require 'spec_helper'
 describe Category do
   context 'testing first_or_create with validations' do
     it 'should create a new category with a unique name' do
-      one_category = FactoryGirl.create(:category, name: 'One Name')
+      one_category = create(:category, name: 'One Name')
       another_category = Category.where({name: 'Another Name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
@@ -23,7 +23,7 @@ describe Category do
     end
 
     it 'should get an existing category with a non-unique name' do
-      one_category = FactoryGirl.create(:category, name: 'Same Name')
+      one_category = create(:category, name: 'Same Name')
       another_category = Category.where({name: 'Same Name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
@@ -33,7 +33,7 @@ describe Category do
     end
 
     it 'should get an existing category with a non-unique name regardless of case' do
-      one_category = FactoryGirl.create(:category, name: 'Same Name')
+      one_category = create(:category, name: 'Same Name')
       another_category = Category.where({name: 'same name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
