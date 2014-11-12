@@ -13,10 +13,10 @@
 require 'spec_helper'
 
 describe Point do
-  context 'testing get_or_create' do
+  context 'testing first_or_create with validations' do
     it 'should create a new point with a unique name' do
       one_point = FactoryGirl.create(:point, latitude: 37.7, longitude: -122.4)
-      another_point = Point.get_or_create({latitude: 37.7, longitude: -122.41})
+      another_point = Point.where({latitude: 37.7, longitude: -122.41}).first_or_create
 
       expect(one_point).not_to eq(nil)
       expect(another_point).not_to eq(nil)
@@ -25,7 +25,7 @@ describe Point do
 
     it 'should get an existing point with a non-unique name' do
       one_point = FactoryGirl.create(:point, latitude: 37.71, longitude: -122.41)
-      another_point = Point.get_or_create({latitude: 37.71, longitude: -122.41})
+      another_point = Point.where({latitude: 37.71, longitude: -122.41}).first_or_create
 
       expect(one_point).not_to eq(nil)
       expect(another_point).not_to eq(nil)
@@ -35,15 +35,15 @@ describe Point do
     end
 
     it 'should return nil when no attributes are provided' do
-      one_point = Point.get_or_create(nil)
+      one_point = Point.where(nil).first_or_create
 
-      expect(one_point).to eq(nil)
+      expect(one_point.id).to eq(nil)
     end
 
     it 'should return nil when empty attributes are provided' do
-      one_point = Point.get_or_create({})
+      one_point = Point.where({}).first_or_create
 
-      expect(one_point).to eq(nil)
+      expect(one_point.id).to eq(nil)
     end
   end
 end

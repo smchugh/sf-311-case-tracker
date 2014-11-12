@@ -11,10 +11,10 @@
 require 'spec_helper'
 
 describe Category do
-  context 'testing get_or_create' do
+  context 'testing first_or_create with validations' do
     it 'should create a new category with a unique name' do
       one_category = FactoryGirl.create(:category, name: 'One Name')
-      another_category = Category.get_or_create({name: 'Another Name'})
+      another_category = Category.where({name: 'Another Name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
       expect(another_category).not_to eq(nil)
@@ -24,7 +24,7 @@ describe Category do
 
     it 'should get an existing category with a non-unique name' do
       one_category = FactoryGirl.create(:category, name: 'Same Name')
-      another_category = Category.get_or_create({name: 'Same Name'})
+      another_category = Category.where({name: 'Same Name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
       expect(another_category).not_to eq(nil)
@@ -34,7 +34,7 @@ describe Category do
 
     it 'should get an existing category with a non-unique name regardless of case' do
       one_category = FactoryGirl.create(:category, name: 'Same Name')
-      another_category = Category.get_or_create({name: 'same name'})
+      another_category = Category.where({name: 'same name'}).first_or_create
 
       expect(one_category).not_to eq(nil)
       expect(another_category).not_to eq(nil)
@@ -43,15 +43,15 @@ describe Category do
     end
 
     it 'should return nil when no attributes are provided' do
-      one_category = Category.get_or_create(nil)
+      one_category = Category.where(nil).first_or_create
 
-      expect(one_category).to eq(nil)
+      expect(one_category.id).to eq(nil)
     end
 
     it 'should return nil when empty attributes are provided' do
-      one_category = Category.get_or_create({})
+      one_category = Category.where({}).first_or_create
 
-      expect(one_category).to eq(nil)
+      expect(one_category.id).to eq(nil)
     end
   end
 end

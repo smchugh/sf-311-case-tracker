@@ -124,32 +124,38 @@ class Case < ActiveRecord::Base
 
       # Insert each case into the DB
       case_reports.each do |case_report|
-        point = Point.get_or_create(case_report[:point])
-        category = Category.get_or_create(
-            case_report[:category] ? {name: case_report[:category]} : nil
-        )
-        request_type = RequestType.get_or_create(
-            case_report[:request_type] ? {name: case_report[:request_type]} : nil
-        )
-        status = Status.get_or_create(
-            case_report[:status] ? {name: case_report[:status]} : nil
-        )
-        neighborhood = Neighborhood.get_or_create(
-            case_report[:neighborhood] ?
-                {
-                    name: case_report[:neighborhood],
-                    supervisor_district: case_report[:supervisor_district]
-                } :
-                nil
-        )
-        responsible_agency = ResponsibleAgency.get_or_create(
-            case_report[:responsible_agency] ?
-                {name: case_report[:responsible_agency]} :
-                nil
-        )
-        source = Source.get_or_create(
-            case_report[:source] ? {name: case_report[:source]} : nil
-        )
+        point = case_report[:point] ? Point.where(
+          latitude: case_report[:point][:latitude],
+          longitude: case_report[:point][:longitude]
+        ).first_or_create(
+          needs_recoding: case_report[:point][:needs_recoding]
+        ) : nil
+
+        category = case_report[:category] ? Category.where(
+          name: case_report[:category]
+        ).first_or_create : nil
+
+        request_type = case_report[:request_type] ? RequestType.where(
+          name: case_report[:request_type]
+        ).first_or_create : nil
+
+        status = case_report[:status] ? Status.where(
+          name: case_report[:status]
+        ).first_or_create : nil
+
+        neighborhood = case_report[:neighborhood] ? Neighborhood.where(
+          name: case_report[:neighborhood]
+        ).first_or_create(
+          supervisor_district: case_report[:supervisor_district]
+        ) : nil
+
+        responsible_agency = case_report[:responsible_agency] ? ResponsibleAgency.where(
+          name: case_report[:responsible_agency]
+        ).first_or_create : nil
+
+        source = case_report[:source] ? Source.where(
+          name: case_report[:source]
+        ).first_or_create : nil
 
         Case.create(
             point: point,

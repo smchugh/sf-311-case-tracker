@@ -11,10 +11,10 @@
 require 'spec_helper'
 
 describe Source do
-  context 'testing get_or_create' do
+  context 'testing first_or_create with validations' do
     it 'should create a new source with a unique name' do
       one_source = FactoryGirl.create(:source, name: 'One Name')
-      another_source = Source.get_or_create({name: 'Another Name'})
+      another_source = Source.where({name: 'Another Name'}).first_or_create
 
       expect(one_source).not_to eq(nil)
       expect(another_source).not_to eq(nil)
@@ -24,7 +24,7 @@ describe Source do
 
     it 'should get an existing source with a non-unique name' do
       one_source = FactoryGirl.create(:source, name: 'Same Name')
-      another_source = Source.get_or_create({name: 'Same Name'})
+      another_source = Source.where({name: 'Same Name'}).first_or_create
 
       expect(one_source).not_to eq(nil)
       expect(another_source).not_to eq(nil)
@@ -34,7 +34,7 @@ describe Source do
 
     it 'should get an existing source with a non-unique name regardless of case' do
       one_source = FactoryGirl.create(:source, name: 'Same Name')
-      another_source = Source.get_or_create({name: 'same name'})
+      another_source = Source.where({name: 'same name'}).first_or_create
 
       expect(one_source).not_to eq(nil)
       expect(another_source).not_to eq(nil)
@@ -43,15 +43,15 @@ describe Source do
     end
 
     it 'should return nil when no attributes are provided' do
-      one_source = Source.get_or_create(nil)
+      one_source = Source.where(nil).first_or_create
 
-      expect(one_source).to eq(nil)
+      expect(one_source.id).to eq(nil)
     end
 
     it 'should return nil when empty attributes are provided' do
-      one_source = Source.get_or_create({})
+      one_source = Source.where({}).first_or_create
 
-      expect(one_source).to eq(nil)
+      expect(one_source.id).to eq(nil)
     end
   end
 end

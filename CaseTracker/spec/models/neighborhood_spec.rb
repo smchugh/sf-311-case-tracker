@@ -12,10 +12,10 @@
 require 'spec_helper'
 
 describe Neighborhood do
-  context 'testing get_or_create' do
+  context 'testing first_or_create with validations' do
     it 'should create a new neighborhood with a unique name' do
       one_neighborhood = FactoryGirl.create(:neighborhood, name: 'One Name')
-      another_neighborhood = Neighborhood.get_or_create({name: 'Another Name'})
+      another_neighborhood = Neighborhood.where({name: 'Another Name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)
       expect(another_neighborhood).not_to eq(nil)
@@ -25,7 +25,7 @@ describe Neighborhood do
 
     it 'should get an existing neighborhood with a non-unique name' do
       one_neighborhood = FactoryGirl.create(:neighborhood, name: 'Same Name')
-      another_neighborhood = Neighborhood.get_or_create({name: 'Same Name'})
+      another_neighborhood = Neighborhood.where({name: 'Same Name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)
       expect(another_neighborhood).not_to eq(nil)
@@ -35,7 +35,7 @@ describe Neighborhood do
 
     it 'should get an existing neighborhood with a non-unique name regardless of case' do
       one_neighborhood = FactoryGirl.create(:neighborhood, name: 'Same Name')
-      another_neighborhood = Neighborhood.get_or_create({name: 'same name'})
+      another_neighborhood = Neighborhood.where({name: 'same name'}).first_or_create
 
       expect(one_neighborhood).not_to eq(nil)
       expect(another_neighborhood).not_to eq(nil)
@@ -44,15 +44,15 @@ describe Neighborhood do
     end
 
     it 'should return nil when no attributes are provided' do
-      one_neighborhood = Neighborhood.get_or_create(nil)
+      one_neighborhood = Neighborhood.where(nil).first_or_create
 
-      expect(one_neighborhood).to eq(nil)
+      expect(one_neighborhood.id).to eq(nil)
     end
 
     it 'should return nil when empty attributes are provided' do
-      one_neighborhood = Neighborhood.get_or_create({})
+      one_neighborhood = Neighborhood.where({}).first_or_create
 
-      expect(one_neighborhood).to eq(nil)
+      expect(one_neighborhood.id).to eq(nil)
     end
   end
 end
